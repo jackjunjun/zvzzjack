@@ -26,23 +26,12 @@ sched = BackgroundScheduler()
 
 
 @sched.scheduled_job("cron", hour=15, minute=30, day_of_week="mon-fri")
-def record_stock_data(data_provider="em", entity_provider="em", sleeping_time=2):
+def record_stock_data(data_provider="em", entity_provider="em", sleeping_time=0.05):
     # A股指数
     run_data_recorder(domain=Index, data_provider=data_provider, force_update=False)
     # A股指数行情
     run_data_recorder(
         domain=Index1dKdata,
-        data_provider=data_provider,
-        entity_provider=entity_provider,
-        day_data=True,
-        sleeping_time=sleeping_time,
-    )
-
-    # A股标的
-    run_data_recorder(domain=Stock, data_provider=data_provider, force_update=False)
-    # A股后复权行情
-    run_data_recorder(
-        domain=Stock1dHfqKdata,
         data_provider=data_provider,
         entity_provider=entity_provider,
         day_data=True,
@@ -76,13 +65,24 @@ def record_stock_data(data_provider="em", entity_provider="em", sleeping_time=2)
         title="report 新概念",
         entity_provider=entity_provider,
         entity_type="block",
-        em_group="关注板块",
-        em_group_over_write=True,
+        em_group="练气",
+        em_group_over_write=False,
+    )
+
+    # A股标的
+    run_data_recorder(domain=Stock, data_provider=data_provider, force_update=False)
+    # A股后复权行情
+    run_data_recorder(
+        domain=Stock1dHfqKdata,
+        data_provider=data_provider,
+        entity_provider=entity_provider,
+        day_data=True,
+        sleeping_time=sleeping_time,
     )
 
 
 @sched.scheduled_job("cron", hour=16, minute=30, day_of_week="mon-fri")
-def record_stockhk_data(data_provider="em", entity_provider="em", sleeping_time=2):
+def record_stockhk_data(data_provider="em", entity_provider="em", sleeping_time=0.05):
     # 港股标的
     run_data_recorder(domain=Stockhk, data_provider=data_provider, force_update=False)
     # 港股后复权行情
